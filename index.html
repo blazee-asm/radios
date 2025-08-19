@@ -23,6 +23,15 @@
             freq = Number(freqInput.value);
         }
 
+        function createGibberish(len) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            let result = '';
+            for (let i = 0; i < len; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
         let data = {};
         let idx = 0;
         let freq = 1000;
@@ -39,6 +48,9 @@
         setInterval(() => {
             idx++;
             const current = data[freq.toString()];
+            if (!current) {
+                display.textContent = createGibberish(50);
+            }
             display.textContent = current[idx % current.length];
         }, 1000);
     </script>

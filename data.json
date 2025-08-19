@@ -5,7 +5,8 @@
         "This is the basic radio. To apply for a frequency, please tune to 442kHz.",
         "Info page:",
         "The reason we say our frequency at the beginning is for confirmation reasons.",
-        "This DOES NOT ACCESS REAL RADIO DATA!!"
+        "This DOES NOT ACCESS REAL RADIO DATA!!",
+        "Random text/gibberish means that a frequency is not supplying any data."
     ],
     "442": [
         "Hi! You're tuning in to Frequency Application, 442kHz.",
