@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Multi-Frequency Radio</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    .freq-container { margin-bottom: 1.5rem; }
+    .freq-title { font-weight: bold; }
+    .freq-message { font-size: 1.5rem; margin-top: 0.3rem; }
+  </style>
+</head>
+<body>
+    <h1>Multi-Frequency Radio (1s ticks)</h1>
+    <input type="number" placeholder="Frequency here..." id="freqIn" /><button onclick="setFreq()">Enter</button><br>
+    <p id="data"></p>
+
+    <script>
+        const display = document.getElementById('data');
+        const freqInput = document.getElementById('freqIn');
+
+        function setFreq() {
+            freq = Number(freqInput.value);
+        }
+
+        let data = {};
+        let idx = 0;
+        let freq = 1000;
+
+        fetch('data.json')
+            .then(res => res.json())
+            .then(d => {
+                data = d;
+            })
+            .catch(err => {
+                display.textContent = "Something went wrong! " + err;
+            });
+        
+        setInterval(() => {
+            idx++;
+            const current = data[freq.toString()];
+            display.textContent = current[idx % current.length];
+        }, 1000);
+    </script>
+</body>
+</html>
