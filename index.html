@@ -11,7 +11,7 @@
   </style>
 </head>
 <body>
-    <h1>Multi-Frequency Radio (1s ticks)</h1>
+    <h1>Multi-Frequency Radio (3s ticks)</h1>
     <input type="number" placeholder="Frequency here..." id="freqIn" /><button onclick="setFreq()">Enter</button><br>
     <p id="data"></p>
 
@@ -33,8 +33,8 @@
         }
 
         let data = {};
-        let idx = 0;
         let freq = 1000;
+        let delay = 3000;
 
         fetch('data.json')
             .then(res => res.json())
@@ -45,14 +45,23 @@
                 display.textContent = "Something went wrong! " + err;
             });
         
-        setInterval(() => {
-            idx++;
+        function tick() {
             const current = data[freq.toString()];
+
             if (!current) {
                 display.textContent = createGibberish(50);
+                delay = 20;
+            } else {
+                delay = 3000;
+                const now = Date.now();
+                const idx = Math.floor(now / delay);
+                display.textContent = current[idx % current.length];
             }
-            display.textContent = current[idx % current.length];
-        }, 1000);
+
+            setTimeout(tick, delay);
+        }
+
+        tick();
     </script>
 </body>
 </html>
