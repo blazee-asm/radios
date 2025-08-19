@@ -32,31 +32,34 @@
             return result;
         }
 
-        let data = {};
+        let data = null;
         let freq = 1000;
+        let prevFreq = 1000;
         let delay = 3000;
-
-        fetch('data.json')
-            .then(res => res.json())
-            .then(d => {
-                data = d;
-            })
-            .catch(err => {
-                display.textContent = "Something went wrong! " + err;
-            });
         
         function tick() {
-            const current = data[freq.toString()];
+            if (prevFreq !== freq) {
+                fetch(`freq${freq}.json`)
+                    .then(res => res.json())
+                    .then(d => {
+                        data = d;
+                    })
+                    .catch(err => {
+                        data = null;
+                    });
+            }
 
-            if (!current) {
+            if (!Array.isArray(data)) {
                 display.textContent = createGibberish(50);
                 delay = 20;
             } else {
                 delay = 3000;
                 const now = Date.now();
                 const idx = Math.floor(now / delay);
-                display.textContent = current[idx % current.length];
+                display.textContent = data[idx % data.length];
             }
+
+            prevFreq = freq;
 
             setTimeout(tick, delay);
         }
