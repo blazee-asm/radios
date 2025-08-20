@@ -83,7 +83,7 @@
 
                 if (!weatherData.current_weather) return 'Can\'t fetch weather. :(';
 
-                return "Weather: " + describeWeatherCode(weatherData.current_weather.weather_code);
+                return "Weather: " + describeWeatherCode(weatherData.current_weather.weathercode);
 
             } catch (err) {
                 console.error(err);
