@@ -108,7 +108,7 @@
             delay = await getAudioDuration(str.match(/_audio=(https?:\/\/[^\s_]+\.(?:mp3|wav|ogg|m4a|aac))_/i)[0]);
             return str.replace(
                 /_audio=(https?:\/\/[^\s_]+\.(?:mp3|wav|ogg|m4a|aac))_/gi,
-                '<audio src="$1" autoplay muted loop></audio>'
+                '<audio src="$1" autoplay loop></audio>'
             );
         }
 
