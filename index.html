@@ -94,7 +94,19 @@
 
         async function showWeather() {
             const weatherText = await getWeather();
-            display.textContent = weatherText || "Can't get weather :(";
+            display.innerHTML = weatherText || "Can't get weather :(";
+        }
+
+        function replaceImageLinks(str) {
+            return str.replace(
+                /_link=(https?:\/\/[^\s_]+\.(?:png|jpe?g|webp|gif|bmp|svg))_/gi,
+                '<img src="$1" />'
+            );
+        }
+
+        function parseStr(input) {
+            output = replaceImageLinks(input);
+            return output;
         }
 
         let data = null;
@@ -128,7 +140,7 @@
                 const currentStr = data[idx % data.length];
                 switch (currentStr) {
                     case "__weather__": await showWeather(); break;
-                    default: display.textContent = currentStr;
+                    default: display.innerHTML = parseStr(currentStr);
                 }
             }
 
