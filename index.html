@@ -2,25 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Multi-Frequency Radio</title>
+  <title>Multi-Channeluency Radio</title>
   <style>
     body { font-family: sans-serif; padding: 1rem; }
-    .freq-container { margin-bottom: 1.5rem; }
-    .freq-title { font-weight: bold; }
-    .freq-message { font-size: 1.5rem; margin-top: 0.3rem; }
+    .channel-container { margin-bottom: 1.5rem; }
+    .channel-title { font-weight: bold; }
+    .channel-message { font-size: 1.5rem; margin-top: 0.3rem; }
   </style>
 </head>
 <body>
-    <h1>Multi-Frequency Radio (3s ticks)</h1>
-    <input type="number" placeholder="Frequency here..." id="freqIn" /><button onclick="setFreq()">Enter</button><br>
+    <h1>Multi-Channeluency Radio (3s ticks)</h1>
+    <input placeholder="Channeluency here..." id="channelIn" /><button onclick="setChannel()">Enter</button><br>
     <p id="data"></p>
 
     <script>
         const display = document.getElementById('data');
-        const freqInput = document.getElementById('freqIn');
+        const channelInput = document.getElementById('channelIn');
 
-        function setFreq() {
-            freq = Number(freqInput.value);
+        function setChannel() {
+            channel = channelInput.value;
         }
 
         function createGibberish(len) {
@@ -110,17 +110,17 @@
         }
 
         let data = null;
-        let freq = 1000;
-        let prevFreq = null;
+        let channel = 1000;
+        let prevChannel = null;
         let delay = 3000;
         let pendingFetch = false;
 
         async function tick() {
-            // Check for frequency change
-            if (prevFreq !== freq && !pendingFetch) {
+            // Check for channel change
+            if (prevChannel !== channel && !pendingFetch) {
                 try {
-                    const res = await fetch(`freq${freq}.json`);
-                    if (!res.ok) throw new Error('Failed to fetch frequency data');
+                    const res = await fetch(`channel${channel}.json`);
+                    if (!res.ok) throw new Error('Failed to fetch channel data');
                     data = await res.json();
                 } catch (err) {
                     data = null;
@@ -144,7 +144,7 @@
                 }
             }
 
-            prevFreq = freq;
+            prevChannel = channel;
             setTimeout(tick, delay);
         }
 
