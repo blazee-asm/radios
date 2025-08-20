@@ -103,7 +103,7 @@
         let delay = 3000;
         let pendingFetch = false;
 
-        function tick() {
+        async function tick() {
             // Check for frequency change
             if (prevFreq !== freq && !pendingFetch) {
                 data = null;
@@ -131,7 +131,7 @@
                 const idx = Math.floor(now / delay);
                 const currentStr = data[idx % data.length];
                 switch (currentStr) {
-                    case "__weather__": showWeather(); break;
+                    case "__weather__": await showWeather(); break;
                     default: display.textContent = currentStr;
                 }
             }
