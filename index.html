@@ -106,19 +106,15 @@
         async function tick() {
             // Check for frequency change
             if (prevFreq !== freq && !pendingFetch) {
-                data = null;
-                pendingFetch = true;
-                fetch(`freq${freq}.json`)
-                    .then(res => res.ok ? res.json() : Promise.reject())
-                    .then(d => {
-                        data = d;
-                    })
-                    .catch(err => {
-                        data = null;
-                    })
-                    .finally(() => {
-                        pendingFetch = false;
-                    });
+                try {
+                    const res = await fetch(`freq${freq}.json`);
+                    if (!res.ok) throw new Error('Failed to fetch frequency data');
+                    data = await res.json();
+                } catch (err) {
+                    data = null;
+                } finally {
+                    pendingFetch = false;
+                }
             }
 
             // Decide what to display
