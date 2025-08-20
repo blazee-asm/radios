@@ -34,7 +34,8 @@
 
         async function getWeather() {
             function describeWeatherCode(code) {
-                switch (code) {
+                const codeInt = Math.round(code); // Round to nearest integer
+                switch (codeInt) {
                     case 0: return 'Clear skies, go outside!';
                     case 1: return 'Mainly clear, why not go shopping?';
                     case 2: return 'Partly cloudy, we recommend to maybe stay inside.';
@@ -42,7 +43,7 @@
                     case 45: return 'Fog, eerie...';
                     case 48: return 'Icy fog, eerie...';
                     case 51: return 'Light drizzle, stay inside to not get wet!';
-                    case 53: return 'Moderate drizzle, you might feel it on yor head.';
+                    case 53: return 'Moderate drizzle, you might feel it on your head.';
                     case 55: return 'Dense drizzle, might be loud.';
                     case 56: return 'Light freezing drizzle, icy!';
                     case 57: return 'Dense freezing drizzle, icy!';
