@@ -32,6 +32,65 @@
             return result;
         }
 
+        async function getWeather() {
+            function describeWeatherCode(code) {
+                switch (code) {
+                    case 0: return 'Clear skies, go outside!';
+                    case 1: return 'Mainly clear, why not go shopping?';
+                    case 2: return 'Partly cloudy, we recommend to maybe stay inside.';
+                    case 3: return 'Fully clouded, stay inside!';
+                    case 45: return 'Fog, eerie...';
+                    case 48: return 'Icy fog, eerie...';
+                    case 51: return 'Light drizzle, stay inside to not get wet!';
+                    case 53: return 'Moderate drizzle, you might feel it on yor head.';
+                    case 55: return 'Dense drizzle, might be loud.';
+                    case 56: return 'Light freezing drizzle, icy!';
+                    case 57: return 'Dense freezing drizzle, icy!';
+                    case 61: return 'Slight rain, it\'s rainy.';
+                    case 63: return 'Moderate rain, yikes!';
+                    case 65: return 'Heavy rain, is it summer?';
+                    case 66: return 'Light freezing rain, this is gonna be very icy.';
+                    case 67: return 'Heavy freezing rain, this is gonna be very icy.';
+                    case 71: return 'Slight snow fall, snow angels?';
+                    case 73: return 'Moderate snow fall, snowball fights!';
+                    case 75: return 'Heavy snow fall, stay inside then get ready for snowmen!';
+                    case 77: return 'Snow grains';
+                    case 80: return 'Slight rain showers';
+                    case 81: return 'Moderate rain showers';
+                    case 82: return 'Torrential rain, happens in summer during big climate changes.';
+                    case 85: return 'Slight snow showers, melting on impact? Dunno.';
+                    case 86: return 'Heavy snow showers, ice-cold baths!';
+                    case 95: return 'Thunderstorm, loud!';
+                    case 96: return 'Thunderstorm with slight hail, double whammy!';
+                    case 99: return 'Thunderstorm with heavy hail, I don\'t know what to say...';
+                    default: return 'Unknown weather, we just... don\'t know.';
+                }
+            }
+
+            try {
+                // Fetch user location from IP
+                const locRes = await fetch('http://ip-api.com/json/');
+                if (!locRes.ok) throw new Error('Failed to fetch IP location');
+                const locData = await locRes.json();
+                if (locData.status !== 'success') throw new Error('IP location fetch failed');
+
+                const { lat, lon } = locData;
+
+                // Fetch weather from Open-Meteo
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
+                if (!weatherRes.ok) throw new Error('Failed to fetch weather');
+                const weatherData = await weatherRes.json();
+
+                if (!weatherData.current_weather) return 'Can\'t fetch weather. :(';
+
+                return "Weather: " + describeWeatherCode(weatherData.current_weather.weatherCode);
+
+            } catch (err) {
+                console.error(err);
+                return null;  // or throw err if you want to handle outside
+            }
+        }
+
         let data = null;
         let freq = 1000;
         let prevFreq = null;
@@ -64,7 +123,11 @@
                 delay = 3000;
                 const now = Date.now();
                 const idx = Math.floor(now / delay);
-                display.textContent = data[idx % data.length];
+                const currentStr = data[idx % data.length];
+                switch (currentStr) {
+                    case "__weather__": display.textContent = getWeather();
+                    default: display.textContent = currentStr;
+                }
             }
 
             prevFreq = freq;
