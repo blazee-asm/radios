@@ -69,7 +69,7 @@
 
             try {
                 // Fetch user location from IP
-                const locRes = await fetch('http://ip-api.com/json/');
+                const locRes = await fetch('https://ip-api.com/json/');
                 if (!locRes.ok) throw new Error('Failed to fetch IP location');
                 const locData = await locRes.json();
                 if (locData.status !== 'success') throw new Error('IP location fetch failed');
