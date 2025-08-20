@@ -41,6 +41,7 @@
         function tick() {
             // Check for frequency change
             if (prevFreq !== freq && !pendingFetch) {
+                data = null;
                 pendingFetch = true;
                 fetch(`freq${freq}.json`)
                     .then(res => res.ok ? res.json() : Promise.reject())
