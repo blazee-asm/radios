@@ -38,6 +38,8 @@
         let delay = 3000;
         
         function tick() {
+            setTimeout(tick, delay);
+
             if (prevFreq !== freq) {
                 fetch(`freq${freq}.json`)
                     .then(res => res.json())
@@ -60,8 +62,6 @@
             }
 
             prevFreq = freq;
-
-            setTimeout(tick, delay);
         }
 
         tick();
