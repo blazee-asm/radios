@@ -91,6 +91,11 @@
             }
         }
 
+        async function showWeather() {
+            const weatherText = await getWeather();
+            display.textContent = weatherText || "Can't get weather :(";
+        }
+
         let data = null;
         let freq = 1000;
         let prevFreq = null;
@@ -125,7 +130,7 @@
                 const idx = Math.floor(now / delay);
                 const currentStr = data[idx % data.length];
                 switch (currentStr) {
-                    case "__weather__": display.textContent = getWeather();
+                    case "__weather__": showWeather();
                     default: display.textContent = currentStr;
                 }
             }
