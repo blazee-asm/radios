@@ -99,7 +99,7 @@
 
         function replaceImageLinks(str) {
             return str.replace(
-                /_link=(https?:\/\/[^\s_]+\.(?:png|jpe?g|webp|gif|bmp|svg))_/gi,
+                /_link=(https?:\/\/[^\s]+\.(?:png|jpe?g|webp|gif|bmp|svg))_/gi,
                 '<img src="$1" />'
             );
         }
