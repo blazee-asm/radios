@@ -36,22 +36,27 @@
         let freq = 1000;
         let prevFreq = null;
         let delay = 3000;
-        
-        function tick() {
-            setTimeout(tick, delay);
+        let pendingFetch = false;
 
-            if (prevFreq !== freq) {
+        function tick() {
+            // Check for frequency change
+            if (prevFreq !== freq && !pendingFetch) {
+                pendingFetch = true;
                 fetch(`freq${freq}.json`)
-                    .then(res => res.json())
+                    .then(res => res.ok ? res.json() : Promise.reject())
                     .then(d => {
                         data = d;
                     })
                     .catch(err => {
                         data = null;
+                    })
+                    .finally(() => {
+                        pendingFetch = false;
                     });
             }
 
-            if (!Array.isArray(data)) {
+            // Decide what to display
+            if (pendingFetch || !Array.isArray(data)) {
                 display.textContent = createGibberish(50);
                 delay = 20;
             } else {
@@ -62,6 +67,7 @@
             }
 
             prevFreq = freq;
+            setTimeout(tick, delay);
         }
 
         tick();
