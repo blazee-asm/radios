@@ -83,7 +83,7 @@
 
                 if (!weatherData.current_weather) return 'Can\'t fetch weather. :(';
 
-                return "Weather: " + describeWeatherCode(weatherData.current_weather.weatherCode);
+                return "Weather: " + describeWeatherCode(weatherData.current_weather.weather_code);
 
             } catch (err) {
                 console.error(err);
@@ -130,7 +130,7 @@
                 const idx = Math.floor(now / delay);
                 const currentStr = data[idx % data.length];
                 switch (currentStr) {
-                    case "__weather__": showWeather();
+                    case "__weather__": showWeather(); break;
                     default: display.textContent = currentStr;
                 }
             }
