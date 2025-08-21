@@ -1,41 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="description" content="Awesome radio app where you can listen to multiple channels." charset="UTF-8">
-  <title>Radio</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+    <meta charset="UTF-8" />
+    <meta name="description" content="Awesome radio app where you can listen to multiple channels." />
+    <title>Radio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
 
-    #notes {
-        font-family: 'Patrick Hand', cursive;
-        background: #fff8dc;
-        padding: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
-        max-width: 300px;
-        white-space: pre-wrap;
-    }
+        #notes {
+            font-family: 'Patrick Hand', cursive;
+            background: #fff8dc;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+            max-width: 300px;
+            white-space: pre-wrap;
+        }
 
-    body { font-family: sans-serif; padding: 1rem; }
-  </style>
+        body { font-family: sans-serif; padding: 1rem; }
+    </style>
 </head>
 <body>
     <h1>Radio</h1>
     <input placeholder="Channel here..." id="channelIn" /><button onclick="setChannel()">Enter</button><br>
     <p id="data"></p><br><br><br>
-    <textarea id="notes" rows="5" cols="40" placeholder="Write your notes here..."></textarea><br>
-    <button id="saveNotes">Save</button>
-    <button id="loadNotes">Load</button>
+    <textarea id="notes" rows="5" cols="40" placeholder="Write your favorite channels here!"></textarea><br>
+    <button id="saveNotes" onclick="saveNotes()">Save</button>
+    <button id="loadNotes" onclick="loadNotes()">Load</button>
 
     <script>
         const display = document.getElementById('data');
         const channelInput = document.getElementById('channelIn');
         const notesArea = document.getElementById('notes');
-
-        function setChannel() {
-            channel = channelInput.value;
-        }
 
         function createGibberish(len) {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
@@ -47,8 +44,13 @@
         }
 
         function saveNotes() {
-            const notes = notesArea.value.split('\n');
+            const notes = notesArea.value;
             localStorage.setItem("savedChannels", notes);
+        }
+
+        function loadNotes() {
+            const notes = localStorage.getItem("savedChannels");
+            notesArea.value = notes || "";
         }
 
         async function getLocation() {
@@ -135,6 +137,7 @@
         async function replaceAudioLinks(str) {
             let match = str.match(/_audio=(https?:\/\/[^\s]+\.(?:mp3|wav|ogg|m4a|aac))_/i);
             if (match) delay = await getAudioDuration(match[0].slice(7, -1));
+            else delay = 3000;
             return str.replace(
                 /_audio=(https?:\/\/[^\s]+\.(?:mp3|wav|ogg|m4a|aac))_/gi,
                 (_, url) => `<audio src="${url}" autoplay loop></audio>`
