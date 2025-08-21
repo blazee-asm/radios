@@ -109,7 +109,7 @@
             if (match) delay = await getAudioDuration(match[0].slice(7, -1));
             return str.replace(
                 /_audio=(https?:\/\/[^\s_]+\.(?:mp3|wav|ogg|m4a|aac))_/gi,
-                (_, url) => `<audio src="${url}" autoplay loop></audio>`
+                (_, url) => `<audio src="$1" autoplay loop></audio>`
             );
         }
 
