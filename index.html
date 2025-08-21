@@ -107,7 +107,7 @@
         type="range"
         id="channelIn"
         min="0"
-        max="65535"
+        max="4096"
         value="1000"
     />
     <button onclick="setChannel()">Enter</button><br>
@@ -120,10 +120,11 @@
         const display = document.getElementById('data');
         const channelInput = document.getElementById('channelIn');
         const notesArea = document.getElementById('notes');
+        const channelDisp = document.getElementById('channelDisplay');
 
         // Update displayed number as slider moves
         channelInput.addEventListener('input', () => {
-            display.textContent = channelInput.value;
+            channelDisp.textContent = channelInput.value;
         });
 
         function createGibberish(len) {
@@ -321,6 +322,37 @@
 
             setTimeout(tick, delay);
         }
+
+        async function writeChannelMenu() {
+            const select = document.getElementById('channelSelect');
+            try {
+                const res = await fetch('channels.json');
+                if (!res.ok) throw new Error('Failed to fetch channels.json');
+                const channels = await res.json();
+
+                // Clear existing options
+                select.innerHTML = '';
+
+                // Add a default empty option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Select a channel --';
+                select.appendChild(defaultOption);
+
+                // Add channels to dropdown
+                channels.forEach(ch => {
+                    const option = document.createElement('option');
+                    option.value = ch.id;
+                    option.textContent = ch.name;
+                    select.appendChild(option);
+                });
+            } catch (err) {
+                console.error(err);
+                select.innerHTML = '<option value="">Failed to load channels</option>';
+            }
+        }
+
+        writeChannelMenu();
 
         tick();
     </script>
