@@ -32,9 +32,23 @@
             return result;
         }
 
+        async function getLocation() {
+            try {
+                const res = await fetch('https://ipinfo.io/json?token='); // You can add your token here for better limits or leave empty
+                if (!res.ok) throw new Error('Failed to fetch IP location');
+                const data = await res.json();
+                if (!data.loc) throw new Error('No location data');
+                const [lat, lon] = data.loc.split(',').map(Number);
+                return { lat, lon };
+            } catch (err) {
+                console.error('Failed to get location:', err.message);
+                return null;
+            }
+        }
+
         async function getWeather() {
             function describeWeatherCode(code) {
-                const codeInt = Math.round(code); // Round to nearest integer
+                const codeInt = Math.round(code);
                 switch (codeInt) {
                     case 0: return 'Clear skies, go outside!';
                     case 1: return 'Mainly clear, why not go shopping?';
@@ -69,15 +83,10 @@
             }
 
             try {
-                // Fetch user location from IP
-                const locRes = await fetch('https://ip-api.com/json/');
-                if (!locRes.ok) throw new Error('Failed to fetch IP location');
-                const locData = await locRes.json();
-                if (locData.status !== 'success') throw new Error('IP location fetch failed');
-
+                const locData = await getLocation();
+                if (!locData) throw new Error('IP location fetch failed');
                 const { lat, lon } = locData;
 
-                // Fetch weather from Open-Meteo
                 const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
                 if (!weatherRes.ok) throw new Error('Failed to fetch weather');
                 const weatherData = await weatherRes.json();
@@ -88,7 +97,7 @@
 
             } catch (err) {
                 console.error(err);
-                return null;  // or throw err if you want to handle outside
+                return null;
             }
         }
 
@@ -138,38 +147,64 @@
         let delay = 3000;
         let pendingFetch = false;
 
-        async function tick() {
-            // Check for channel change
-            if (prevChannel !== channel && !pendingFetch) {
-                try {
-                    const res = await fetch(`channel-${channel}.json`);
-                    if (!res.ok) throw new Error('Failed to fetch channel data');
-                    data = await res.json();
-                } catch (err) {
-                    data = null;
-                } finally {
-                    pendingFetch = false;
-                }
+        async function fetchChannelData(chan) {
+            if (pendingFetch) return; // prevent multiple simultaneous fetches
+            pendingFetch = true;
+            try {
+                const res = await fetch(`channel-${chan}.json`);
+                if (!res.ok) throw new Error('Failed to fetch channel data');
+                data = await res.json();
+                prevChannel = chan;
+            } catch (err) {
+                data = null;
+                console.error(err);
+            } finally {
+                pendingFetch = false;
             }
+        }
 
-            // Decide what to display
-            if (pendingFetch || !Array.isArray(data)) {
+        async function setChannel() {
+            const newChannel = channelInput.value.trim();
+            if (newChannel && newChannel !== channel) {
+                channel = newChannel;
+                await fetchChannelData(channel);
+                updateDisplayOnce();
+            }
+        }
+
+        async function updateDisplayOnce() {
+            if (!Array.isArray(data)) {
                 display.textContent = createGibberish(50);
-                delay = 20;
-                setTimeout(tick, delay);
             } else {
-                delay = 3000;
                 const now = Date.now();
                 const idx = Math.floor(now / delay);
                 const currentStr = data[idx % data.length];
                 switch (currentStr) {
-                    case "__weather__": await showWeather(); break;
-                    default: display.innerHTML = await parseStr(currentStr);
+                    case "__weather__":
+                        await showWeather();
+                        break;
+                    default:
+                        display.innerHTML = await parseStr(currentStr);
                 }
-                setTimeout(tick, delay);
+            }
+        }
+
+        async function tick() {
+            if (pendingFetch) {
+                display.textContent = createGibberish(50);
+                setTimeout(tick, 20); // very fast retry if fetching
+                return;
             }
 
-            prevChannel = channel;
+            // If channel changed but fetch didn’t happen yet, fetch it (fallback)
+            if (prevChannel !== channel) {
+                await fetchChannelData(channel);
+            }
+
+            // Show current message
+            await updateDisplayOnce();
+
+            setTimeout(tick, delay);
         }
 
         tick();
