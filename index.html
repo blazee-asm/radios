@@ -5,20 +5,97 @@
     <meta name="description" content="Awesome radio app where you can listen to multiple channels." />
     <title>Radio</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5dc; /* soft cream */
+            color: #333;
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-family: 'Patrick Hand', cursive;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #2a2a72; /* dark blue */
+            text-shadow: 1px 1px 2px #b0c4de;
+        }
+
+        #channelIn {
+            width: 250px;
+            padding: 0.5rem;
+            font-size: 1.2rem;
+            border: 2px solid #2a2a72;
+            border-radius: 10px;
+            margin-right: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        #channelIn:focus {
+            outline: none;
+            border-color: #ff8c00; /* accent orange */
+        }
+
+        button {
+            background-color: #2a2a72;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #ff8c00;
+            transform: scale(1.05);
+        }
+
+        #data {
+            background-color: #fff;
+            border: 2px solid #2a2a72;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            max-width: 600px;
+            min-height: 100px;
+            font-size: 1.25rem;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            box-shadow: 0 0 10px rgba(42, 42, 114, 0.3);
+        }
 
         #notes {
-            font-family: 'Patrick Hand', cursive;
-            background: #fff8dc;
-            padding: 1rem;
+            max-width: 600px;
+            width: 100%;
+            margin-top: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            background-color: #fff8dc;
             border: 1px solid #ccc;
-            border-radius: 6px;
+            border-radius: 12px;
+            padding: 1rem;
             box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
-            max-width: 300px;
             white-space: pre-wrap;
         }
 
-        body { font-family: sans-serif; padding: 1rem; }
+        @media (max-width: 600px) {
+            #channelIn {
+                width: 100%;
+                margin-bottom: 1rem;
+                margin-right: 0;
+            }
+
+            button {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -41,6 +118,12 @@
         const display = document.getElementById('data');
         const channelInput = document.getElementById('channelIn');
         const notesArea = document.getElementById('notes');
+        const slider = document.getElementById('channelSlider');
+
+        // Update displayed number as slider moves
+        slider.addEventListener('input', () => {
+            display.textContent = channelInput.value;
+        });
 
         function createGibberish(len) {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
