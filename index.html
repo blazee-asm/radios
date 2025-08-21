@@ -131,6 +131,7 @@
         async function getAudioDuration(url) {
             return new Promise((resolve, reject) => {
                 const audio = new Audio();
+                audio.crossOrigin = 'anonymous';
                 audio.src = url;
                 audio.addEventListener('loadedmetadata', () => {
                     resolve(audio.duration * 1000);
