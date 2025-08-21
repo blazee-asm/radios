@@ -1,2 +1,2 @@
 # radios
-Simple "radio" fetcher, text-only.
+Simple "radio" fetcher. Supports images, audio and text.
