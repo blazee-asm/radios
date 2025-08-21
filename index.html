@@ -5,6 +5,8 @@
     <meta name="description" content="Awesome radio app where you can listen to multiple channels." />
     <title>Radio</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f5f5dc; /* soft cream */
@@ -118,10 +120,9 @@
         const display = document.getElementById('data');
         const channelInput = document.getElementById('channelIn');
         const notesArea = document.getElementById('notes');
-        const slider = document.getElementById('channelSlider');
 
         // Update displayed number as slider moves
-        slider.addEventListener('input', () => {
+        channelInput.addEventListener('input', () => {
             display.textContent = channelInput.value;
         });
 
